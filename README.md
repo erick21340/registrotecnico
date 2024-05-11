@@ -1,0 +1,2 @@
+# registrotecnico
+tarea 1
