@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using registrotecnico.Components;
 using registrotecnico.DAL;
+using registrotecnico.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,7 @@ builder.Services.AddRazorComponents()
 
 var ConStr = builder.Configuration.GetConnectionString("ConStr");
 builder.Services.AddDbContext<Contexto>(options => options.UseSqlite(ConStr));
-
+builder.Services.AddScoped<tecnicosServices>();
 
 
 var app = builder.Build();
