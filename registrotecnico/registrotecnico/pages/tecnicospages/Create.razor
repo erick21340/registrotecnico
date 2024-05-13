@@ -1,0 +1,47 @@
+﻿@page "/CreateTecnicos"
+@inject tecnicosServices tecnicosServices
+@inject NavigationManager navigation
+@rendermode InteractiveServer
+
+<PageTitle>Guardar nuevo técnico</PageTitle>
+<EditForm Model="tecnico" OnValidSubmit="Crear">
+    <DataAnnotationsValidator />
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header">
+                <h1><strong>Crear nuevo técnico</strong></h1>
+            </div>
+            <div class="card-body">
+                <label class="form-label" for="id"><strong>TecnicoId</strong></label>
+                <InputNumber id="id" class="form-control" @bind-Value="tecnico.TecnicosId"></InputNumber>
+                <label class="form-label" for="nombre"><strong>Nombres</strong></label>
+                <InputText id="nombre" class="form-control" @bind-Value="tecnico.nombres"></InputText>
+                <ValidationMessage For="@(()=> tecnico.nombres)"></ValidationMessage>
+                <label class="form-label" for="sueldo"><strong>Sueldo por hora</strong></label>
+                <InputNumber id="sueldo" class="form-control" @bind-Value="tecnico.sueldohoras" min="0"></InputNumber>
+                <ValidationMessage For="@(()=> tecnico.sueldohoras)"></ValidationMessage>
+            </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-outline-secondary" @onclick="Volver">Volver</button>
+                <button type="submit" class="btn btn-outline-success bi bi-floppy">  Crear</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+
+@code {
+    public tecnicos tecnico { get; set; } = new tecnicos();
+
+    public async Task Crear()
+    {
+        await tecnicosServices.Guardar(tecnico);
+        tecnico = new tecnicos();
+        Volver();
+    }
+
+    public void Volver()
+    {
+        navigation.NavigateTo("/Tecnico");
+    }
+}
