@@ -20,13 +20,13 @@ namespace registrotecnico.Services
             return await _contexto.tecnicos!.AnyAsync(t => t.TecnicosId == tecnicosid);
         }
 
-        public async Task<bool> Insertar(tecnicos tecnicos)
+        private async Task<bool> Insertar(tecnicos tecnicos)
         {
             _contexto.Add(tecnicos);
             return await _contexto.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> Modificar(tecnicos tecnicos)
+        private async Task<bool> Modificar(tecnicos tecnicos)
         {
             _contexto.Update(tecnicos);
             var guardado = await _contexto.SaveChangesAsync() > 0;
@@ -36,8 +36,13 @@ namespace registrotecnico.Services
 
         public async Task<bool> Eliminar(tecnicos tecnicos)
         {
-            return await _contexto.tecnicos!.AsNoTracking().Where(t => t.TecnicosId == tecnicos.TecnicosId).ExecuteDeleteAsync() > 0;
+            var cantidad = await _contexto.tecnicos
+                .Where(c => c.TecnicosId == tecnicos.TecnicosId)
+                .ExecuteDeleteAsync();
+            return cantidad > 0;
         }
+
+
 
         public async Task<tecnicos?> Buscar(int tecnicoID)
         {
@@ -51,13 +56,13 @@ namespace registrotecnico.Services
 
         public async Task<bool> Guardar(tecnicos tecnicos)
         {
-            if (await Existe(tecnicos.TecnicosId))
+            if (!await Existe(tecnicos.TecnicosId))
             {
-                return await Modificar(tecnicos);
+                return await Insertar (tecnicos);
             }
             else
             {
-                return await Insertar(tecnicos);
+                return await Modificar(tecnicos);
             }
         }
     }
