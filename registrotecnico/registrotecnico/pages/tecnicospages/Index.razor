@@ -1,0 +1,100 @@
+﻿@page "/Tecnico"
+@inject tecnicosServices tecnicosServices
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+
+<PageTitle>Lista de Técnicos</PageTitle>
+
+<div class="card">
+    <div class="card-header bg-primary">
+        <div class="row text-white text-center">
+            <h3>Técnicos</h3>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col d-flex justify-content-end align-items-end">
+                <a href="/CreateTecnicos" class="btn btn-success"><i class="fas fa-plus"></i> Crear</a>
+            </div>
+        </div>
+
+        <table class="table table-bordered text-center">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th>TecnicoId</th>
+                    <th>Nombres</th>
+                    <th>Sueldo por hora</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var tecnico in tecnicosList)
+                {
+                    <tr>
+                        <td>@tecnico.TecnicosId</td>
+                        <td>@tecnico.nombres</td>
+                        <td>@tecnico.sueldohoras</td>
+                        <td>
+                            <a href="/EditTecnico/@tecnico.TecnicosId" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i> Editar</a>
+                        </td>
+                        <td>
+                            <a href="/DeleteTecnico/@tecnico.TecnicosId" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> Eliminar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    public List<tecnicos> tecnicosList = new List<tecnicos>();
+    public tecnicos nuevoTecnico = new tecnicos();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarTecnicos();
+    }
+
+    private async Task CargarTecnicos()
+    {
+        tecnicosList = await tecnicosServices.Listar(t => true);
+    }
+
+    private async Task EliminarTecnico(tecnicos tecnico)
+    {
+        var confirmar = await JSRuntime.InvokeAsync<bool>("confirm", $"¿Estás seguro de eliminar el técnico {tecnico.nombres}?");
+        if (confirmar)
+        {
+            var eliminado = await tecnicosServices.Eliminar(tecnico);
+            if (eliminado)
+            {
+                await CargarTecnicos();
+            }
+            else
+            {
+                // Manejar error
+            }
+        }
+    }
+    @code {
+    bool mostrarFormulario = false;
+}
+
+    private async Task GuardarNuevoTecnico()
+    {
+        var guardado = await tecnicosServices.Guardar(nuevoTecnico);
+        if (guardado)
+        {
+            mostrarFormulario = false;
+            await CargarTecnicos();
+        }
+        else
+        {
+            // Manejar error
+        }
+    }
+}
