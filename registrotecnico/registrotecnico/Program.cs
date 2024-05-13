@@ -14,6 +14,7 @@ builder.Services.AddDbContext<Contexto>(options => options.UseSqlite(ConStr));
 builder.Services.AddScoped<tecnicosServices>();
 
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
