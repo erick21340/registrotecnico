@@ -13,6 +13,9 @@ namespace registrotecnico.Models
         
         public float sueldohoras { get; set; }
 
+        public string? Tecnicotipos { get; set; }   
+        
+        public int tipoId { get; set; }
        
 
 
